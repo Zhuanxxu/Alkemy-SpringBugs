@@ -46,7 +46,8 @@ public class TransactionController {
                     content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ApiErrorDTO.class))})})
     //Mapping---------------------------------------
     @GetMapping("/{transactionId}/")
-    ResponseEntity<TransactionDTO> transactionDetails(@PathVariable Integer transactionId, @RequestHeader("Authorization") String bearerToken) throws ParseException {
+    ResponseEntity<TransactionDTO> transactionDetails(@PathVariable Integer transactionId,
+                                                      @RequestHeader(value = "Authorization") String bearerToken) throws ParseException {
 
         String token = bearerToken.substring("Bearer ".length());
         Integer user_id = GetTokenData.getUserIdFromToken(token);
@@ -67,7 +68,7 @@ public class TransactionController {
     //Mapping---------------------------------------
     @GetMapping("/{userId}")
     ResponseEntity<TransactionPageDTO> transactionsListByUserId(@PathVariable Integer userId,
-                                                                @RequestParam Integer page) {
+                                                                @RequestParam(value = "page") Integer page) {
 
         return ResponseEntity.ok(transactionService.findAllByUserId(userId, page));
     }
@@ -161,6 +162,7 @@ public class TransactionController {
     @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "Transaction created"),
             @ApiResponse(responseCode = "400", description = "Bad Request", content = {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = ApiErrorDTO.class))})})
+    @Parameters(value = @Parameter(name = "Authorization", hidden = true))
     @PostMapping("/sendUsd")
     public ResponseEntity<?> sendUsd(@RequestBody @Valid TransactionCreateDTO transactionDTO,
                                      @RequestHeader(value = "Authorization") String bearerToken)

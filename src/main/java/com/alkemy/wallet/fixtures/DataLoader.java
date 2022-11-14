@@ -11,6 +11,7 @@ import com.alkemy.wallet.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.Random;
@@ -21,6 +22,9 @@ public class DataLoader implements ApplicationRunner {
     private final RoleRepository roleRepository;
     private final UserRepository userRepository;
     private final AccountRepository accountRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
 
     @Autowired
     public DataLoader(RoleRepository roleRepository, UserRepository userRepository, AccountRepository accountRepository) {
@@ -46,7 +50,7 @@ public class DataLoader implements ApplicationRunner {
             superUser.setFirstName("Super");
             superUser.setLastName("User");
             superUser.setEmail("superuser@springbugs.com");
-            superUser.setPassword("admin");
+            superUser.setPassword(this.passwordEncoder.encode("admin"));
             Role adminUserRole = roleRepository.findByName(RoleList.ADMIN);
             superUser.setRole(adminUserRole);
             userRepository.save(superUser);
@@ -66,7 +70,7 @@ public class DataLoader implements ApplicationRunner {
                 user.setFirstName("Sample");
                 user.setLastName("User" + i);
                 user.setEmail("sampleuser" + i + "@springbugs.com");
-                user.setPassword("user");
+                user.setPassword(this.passwordEncoder.encode("user"));
                 Role userRole = roleRepository.findByName(RoleList.USER);
                 user.setRole(userRole);
                 userRepository.save(user);

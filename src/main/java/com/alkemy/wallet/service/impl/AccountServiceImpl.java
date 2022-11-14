@@ -78,7 +78,7 @@ public class AccountServiceImpl implements IAccountService {
 
     @Override
     public List<AccountDTO> getAccountsByUser(Integer id) {
-        if (userRepository.findById(id).isEmpty())
+        if (!userRepository.findById(id).isPresent())
             throw new NotFoundException(ErrorList.OBJECT_NOT_FOUND.getMessage());
 
         List<Account> result = this.accountRepository.findAccountsByUserID(id);
